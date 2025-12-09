@@ -190,8 +190,23 @@ class ApproachCircle:
 # ============================
 def load_beats(path):
     y, sr = librosa.load(path)
-    tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-    beat_times = librosa.frames_to_time(beats, sr=sr)
+
+    # Use onset detection for more accurate rhythm tracking
+    onset_env = librosa.onset.onset_strength(y=y, sr=sr)
+
+    # Detect beats with better parameters
+    tempo, beats = librosa.beat.beat_track(
+        onset_envelope=onset_env,
+        y=y,
+        sr=sr,
+        start_bpm=120,
+        units='frames',
+        hop_length=512,
+        tightness=200  # Very strict beat tracking
+    )
+
+    beat_times = librosa.frames_to_time(beats, sr=sr, hop_length=512)
+
     return beat_times
 
 
@@ -311,7 +326,7 @@ def game(song_path, score_bst):
     clock = pygame.time.Clock()
     running = True
     paused = False
-    fall_speed = 10
+    fall_speed = 6
 
     judgement_line = HEIGHT - 150
     hit_window = 60
