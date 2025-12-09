@@ -326,7 +326,7 @@ def game(song_path, score_bst):
     clock = pygame.time.Clock()
     running = True
     paused = False
-    fall_speed = 6
+    fall_speed = 3
 
     judgement_line = HEIGHT - 150
     hit_window = 60
@@ -432,6 +432,11 @@ def game(song_path, score_bst):
                 s.fill(lane_colors[i])
                 screen.blit(s, (lane_x[i] - 50, 0))
                 lane_flash[i] = max(0, lane_flash[i] - 15)
+
+        # Draw lane separators
+        for i in range(5):
+            x = i * 150
+            pygame.draw.line(screen, (100, 100, 100), (x, 0), (x, HEIGHT), 2)
 
         # Draw judgement line
         pygame.draw.line(screen, (255, 255, 255), (0, judgement_line), (WIDTH, judgement_line), 4)
